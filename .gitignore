@@ -1,0 +1,11 @@
+# directories
+CSFID/
+__pycache__/
+
+# files with extension
+*.pyc
+*.pdf
+*.jpg
+*.png
+
+# special 
