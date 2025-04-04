@@ -1,3 +1,39 @@
+# Installation
+
+## Environmental setup
+Creating a virtual environment named `.venv_shoeprint`
+```TypeScript
+python3 -m venv .venv_shoeprint
+```
+
+Activate the environement
+```TypeScript
+source .venv_shoeprint/bin/activate
+```
+
+Updating pip and installing FastAPI in virtual environment
+```TypeScript
+python3 -m pip install --upgrade pip
+python3 -m pip install "fastapi[standard]"
+```
+Install other dependencies:
+```TypeScript
+python3 -m pip install opencv-python-headless
+```
+
+## Backend setup
+Install MongoDB python package in the virtual environment:
+```TypeScript
+python3 -m pip install pymongo
+
+```
+
+## Frontend dependencies
+Install `PyQt` package:
+```TypeScript
+pip install PyQt5
+```
+
 # Dataset
 An open-source database, [CSFID-170](https://fid.dmi.unibas.ch/CSFID.zip), of shoe print is used. This database is a subset of the [FID-300](https://fid.dmi.unibas.ch/) database. 
 

@@ -1,4 +1,5 @@
 # directories
+.venv_shoeprint/
 CSFID/
 __pycache__/
 
@@ -9,3 +10,4 @@ __pycache__/
 *.png
 
 # special 
+.env
