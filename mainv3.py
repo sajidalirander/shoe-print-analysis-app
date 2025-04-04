@@ -10,11 +10,13 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
+import requests
 
-# Paths
-ROOT = "./database"
-RAW_DIR = f"{ROOT}/raw_normalized"
-REF_DIR = f"{ROOT}/references"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RAW_DIR = os.path.join(BASE_DIR, "database", "raw_normalized")
+REF_DIR = os.path.join(BASE_DIR, "database", "references")
+
+API_BASE = "http://127.0.0.1:8000/api"
 
 # --- ORB Feature Extractor ---
 def extract_orb_features(image):
@@ -24,7 +26,7 @@ def extract_orb_features(image):
 
 # --- Image Selector Dialog ---
 class ImageSelectorDialog(QDialog):
-    def __init__(self, image_dir):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Select Probe Image")
         self.selected_image = None
@@ -32,10 +34,16 @@ class ImageSelectorDialog(QDialog):
         layout = QVBoxLayout()
         self.list_widget = QListWidget()
 
-        for file in sorted(os.listdir(image_dir)):
-            if file.endswith((".jpg", ".png")):
-                item = QListWidgetItem(file)
-                self.list_widget.addItem(item)
+        try:
+            response = requests.get(f"{API_BASE}/shoeprints")
+            probe_files = response.json().get("files", [])
+        except Exception as e:
+            print(f"[ERROR] Failed to fetch probe images: {e}")
+            probe_files = []
+
+        for file in probe_files:
+            item = QListWidgetItem(file)
+            self.list_widget.addItem(item)
 
         self.list_widget.itemClicked.connect(self.select_image)
         layout.addWidget(self.list_widget)
@@ -69,44 +77,22 @@ class ShoeprintMatcherApp(QWidget):
         self.setLayout(layout)
 
     def open_image_dialog(self):
-        dialog = ImageSelectorDialog(RAW_DIR)
+        dialog = ImageSelectorDialog()
         if dialog.exec_():
             filename = dialog.selected_image
-            full_path = os.path.join(RAW_DIR, filename)
+            probe_path = os.path.join(RAW_DIR, filename)
 
             # Show probe image
-            pixmap = QPixmap(full_path).scaledToWidth(300, Qt.SmoothTransformation)
+            pixmap = QPixmap(probe_path).scaledToWidth(300, Qt.SmoothTransformation)
             self.image_label.setPixmap(pixmap)
             self.image_label.setText("")
 
-            # Start matching process
-            probe_img = cv2.imread(full_path, cv2.IMREAD_GRAYSCALE)
-            _, probe_des = extract_orb_features(probe_img)
-
-            results = []
-            for ref_file in sorted(os.listdir(REF_DIR)):
-                if not ref_file.endswith(".png"):
-                    continue
-
-                ref_path = os.path.join(REF_DIR, ref_file)
-                ref_img = cv2.imread(ref_path, cv2.IMREAD_GRAYSCALE)
-                _, ref_des = extract_orb_features(ref_img)
-
-                if probe_des is None or ref_des is None or len(probe_des) == 0 or len(ref_des) == 0:
-                    continue
-
-                bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-                matches = bf.match(probe_des, ref_des)
-                if len(matches) == 0:
-                    continue
-
-                avg_distance = np.mean([m.distance for m in matches])
-                results.append((ref_path, avg_distance))
-
-            results.sort(key=lambda x: x[1])
-            top5 = results[:5]
-
-            self.display_matches(top5)
+            try:
+                response = requests.get(f"{API_BASE}/match/{filename}")
+                results = response.json().get("top_matches", [])
+                self.display_matches(results)
+            except Exception as e:
+                print(f"[ERROR] Failed to match image: {e}")
 
     def display_matches(self, match_results):
         # Clear previous matches
@@ -115,7 +101,10 @@ class ShoeprintMatcherApp(QWidget):
             if child.widget():
                 child.widget().deleteLater()
 
-        for ref_path, score in match_results:
+        for match in match_results:
+            ref_path = match["path"]
+            score = match["score"]
+
             label = QLabel()
             pixmap = QPixmap(ref_path).scaledToWidth(200, Qt.SmoothTransformation)
             label.setPixmap(pixmap)

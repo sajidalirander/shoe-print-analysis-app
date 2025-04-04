@@ -1,6 +1,6 @@
 # Installation
 
-## Environmental setup
+## Setup environment
 Creating a virtual environment named `.venv_shoeprint`
 ```TypeScript
 python3 -m venv .venv_shoeprint
@@ -11,24 +11,19 @@ Activate the environement
 source .venv_shoeprint/bin/activate
 ```
 
-Updating pip and installing FastAPI in virtual environment
-```TypeScript
-python3 -m pip install --upgrade pip
-python3 -m pip install "fastapi[standard]"
-```
 Install other dependencies:
 ```TypeScript
 python3 -m pip install opencv-python-headless
 ```
 
-## Backend setup
-Install MongoDB python package in the virtual environment:
+## Backend
+Install all the package in the virtual environment using the [requirement.txt](./requirements.txt):
 ```TypeScript
-python3 -m pip install pymongo
+python3 -m pip install -r requirements.txt 
 
 ```
 
-## Frontend dependencies
+## Frontend
 Install `PyQt` package:
 ```TypeScript
 pip install PyQt5
@@ -37,7 +32,7 @@ pip install PyQt5
 # Dataset
 An open-source database, [CSFID-170](https://fid.dmi.unibas.ch/CSFID.zip), of shoe print is used. This database is a subset of the [FID-300](https://fid.dmi.unibas.ch/) database. 
 
-The dataset is clean and well-suited for the feature extraction and matching. The typcial structure and contents of dataset is stored in the directory [database](./database/).
+The dataset is clean and well-suited for the feature extraction and matching. The typcial structure and contents of dataset is stored in the directory [database](./backend/database/).
 
 The detail is as follows: 
 ```
@@ -46,3 +41,8 @@ raw/ 	        - Original raw crime scene images by investigation team.
 raw_normalized/	- Crime scene impressions are cropped in a way that they are roughly centered in the image frame; scaled to 20 pixel per centimeter.
 label_table.csv	- Maps each raw image to its correct reference.
 ```
+
+# Result
+<div style="text-align: center;">
+    <img src="./assets/result.png" alt="XYZ" width="700" />
+</div>
