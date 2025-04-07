@@ -1,16 +1,14 @@
-# backend/api/logic.py
-
 import os
 import cv2
-import numpy as np
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = os.getcwd()
 RAW_DIR = os.path.join(BASE_DIR, "database", "raw_normalized")
 REF_DIR = os.path.join(BASE_DIR, "database", "references")
 
 def extract_orb_features(image):
     orb = cv2.ORB_create(nfeatures=500)
-    keypoints, descriptors = orb.detectAndCompute(image, None)
+    _, descriptors = orb.detectAndCompute(image, None)
     return descriptors
 
 def compute_match_score(des1, des2):
@@ -43,7 +41,6 @@ def match_probe_to_references(filename, top_k=5):
     return [{"file": f, "score": s, "path": p} for f, s, p in scores[:top_k]]
 
 def list_probe_files():
-    return sorted([
-        f for f in os.listdir(RAW_DIR)
-        if f.lower().endswith((".png", ".jpg", ".jpeg"))
-    ])
+    return sorted([f for f in os.listdir(RAW_DIR)
+                   if f.lower().endswith((".png", ".jpg", ".jpeg"))
+                   ])

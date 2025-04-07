@@ -1,7 +1,6 @@
-# src/ui/image_selector.py
-
-from PyQt5.QtWidgets import QDialog, QListWidget, QVBoxLayout, QListWidgetItem
 from api.backend_client import get_probe_files
+from PyQt5.QtWidgets import QDialog, QListWidget, QVBoxLayout, QListWidgetItem
+
 
 class ImageSelectorDialog(QDialog):
     def __init__(self):

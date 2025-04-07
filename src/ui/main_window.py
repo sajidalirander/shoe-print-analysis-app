@@ -1,17 +1,17 @@
-# src/ui/main_window.py
-
 import os
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSplitter, QSizePolicy
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
 
-from ui.image_selector import ImageSelectorDialog
 from ui.components import create_match_widget
 from api.backend_client import get_match_results
+from ui.image_selector import ImageSelectorDialog
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSplitter
+
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.getcwd()
-RAW_DIR = os.path.join(BASE_DIR, "backend", "database", "raw_normalized")
+RAW_DIR = os.path.join(BASE_DIR, "database", "raw_normalized")
 
 class ShoeprintMatcherApp(QWidget):
     def __init__(self, screen_geometry):
@@ -21,13 +21,10 @@ class ShoeprintMatcherApp(QWidget):
         self.resize(232*9, 1000)
         self.move(self.screen_geometry.left(), self.screen_geometry.top())
 
-        # Create a splitter to divide the window into two parts
         splitter = QSplitter(Qt.Orientation.Horizontal, self)
 
-        # Set initial sizes of the splitter sections
         splitter.setSizes([232, 232*5])
         
-        # Left widget containing the button and image
         left_widget = QWidget()
         left_layout = QVBoxLayout()
         
@@ -46,22 +43,14 @@ class ShoeprintMatcherApp(QWidget):
         left_widget.setLayout(left_layout)
         
         
-        # Placeholder right widget (replace with your actual right-side widget)
         right_widget = QWidget()
         
-        # Create vertical layout: title at top, results below
         right_layout = QVBoxLayout()
         right_layout.setAlignment(Qt.AlignTop)
         right_layout.setContentsMargins(0, 60, 0, 0)
         
-        # # Optional: Add a label title
         title_label = QLabel("Top 5 Matches")
         title_label.setStyleSheet("font-weight: bold; font-size: 16px;")
-        # title_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # <- important
-        # title_label.setAlignment(Qt.AlignLeft)      # Align left
-        
-        # title_label.setAlignment(Qt.AlignLeft)
-        # title_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)  # <-- THIS is the key
         right_layout.addWidget(title_label)
         
         self.results_layout = QHBoxLayout()
@@ -75,7 +64,6 @@ class ShoeprintMatcherApp(QWidget):
         splitter.addWidget(left_widget)
         splitter.addWidget(right_widget)
         
-        # Set the splitter as the central layout
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(splitter)
         self.setLayout(main_layout)

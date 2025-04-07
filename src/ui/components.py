@@ -1,8 +1,7 @@
-# src/ui/components.py
-
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
-from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
+
 
 def create_match_widget(image_path, score):
     image_label = QLabel()

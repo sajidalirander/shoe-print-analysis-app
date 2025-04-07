@@ -1,14 +1,14 @@
-# backend/api/endpoints.py
-
-from fastapi import APIRouter, UploadFile, File
-from fastapi.responses import JSONResponse
-import shutil
 import os
+import shutil
+
+from fastapi.responses import JSONResponse
+from fastapi import APIRouter, UploadFile, File
 
 from backend.api.logic import list_probe_files, match_probe_to_references
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW_DIR = os.path.join(BASE_DIR, "backend", "database", "raw_normalized")
+
+BASE_DIR = os.getcwd()
+RAW_DIR = os.path.join(BASE_DIR, "database", "raw_normalized")
 
 router = APIRouter(prefix="/api")
 
