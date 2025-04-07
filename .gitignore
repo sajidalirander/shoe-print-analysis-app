@@ -10,7 +10,7 @@ __pycache__/
 *.png
 
 # special 
-.env
+# .env
 
 # EXCEPTION: do NOT ignore .png files in assets/
 !assets/*.png
